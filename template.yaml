@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  thumbnail-app
+
+  Sample SAM Template for thumbnail-app
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: "thumbnail-1488-228"
+
+Resources:
+  S3Bucket:kokoko
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref BucketName
+
+  ThumbnailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: thumbnail-lambda-function
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events: s3:ObjectCreated:*
+      Runtime: python3.8
+      Timeout: 300
+      MemorySize: 512

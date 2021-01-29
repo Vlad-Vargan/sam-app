@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-application"
+s3_bucket = "sam-bucket-auhv214"
+s3_prefix = "sam-application"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
