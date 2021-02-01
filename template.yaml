@@ -11,7 +11,7 @@ Parameters:
     Default: "thumbnail-1488-228"
 
 Resources:
-  S3Bucket:kokoko
+  S3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: !Ref BucketName

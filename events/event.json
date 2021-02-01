@@ -1,62 +1,38 @@
 {
-  "body": "{\"message\": \"hello world\"}",
-  "resource": "/{proxy+}",
-  "path": "/path/to/resource",
-  "httpMethod": "POST",
-  "isBase64Encoded": false,
-  "queryStringParameters": {
-    "foo": "bar"
-  },
-  "pathParameters": {
-    "proxy": "/path/to/resource"
-  },
-  "stageVariables": {
-    "baz": "qux"
-  },
-  "headers": {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Encoding": "gzip, deflate, sdch",
-    "Accept-Language": "en-US,en;q=0.8",
-    "Cache-Control": "max-age=0",
-    "CloudFront-Forwarded-Proto": "https",
-    "CloudFront-Is-Desktop-Viewer": "true",
-    "CloudFront-Is-Mobile-Viewer": "false",
-    "CloudFront-Is-SmartTV-Viewer": "false",
-    "CloudFront-Is-Tablet-Viewer": "false",
-    "CloudFront-Viewer-Country": "US",
-    "Host": "1234567890.execute-api.us-east-1.amazonaws.com",
-    "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Custom User Agent String",
-    "Via": "1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)",
-    "X-Amz-Cf-Id": "cDehVQoZnx43VYQb9j2-nvCh-9z396Uhbp027Y2JvkCPNLmGJHqlaA==",
-    "X-Forwarded-For": "127.0.0.1, 127.0.0.2",
-    "X-Forwarded-Port": "443",
-    "X-Forwarded-Proto": "https"
-  },
-  "requestContext": {
-    "accountId": "123456789012",
-    "resourceId": "123456",
-    "stage": "prod",
-    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
-    "requestTime": "09/Apr/2015:12:34:56 +0000",
-    "requestTimeEpoch": 1428582896000,
-    "identity": {
-      "cognitoIdentityPoolId": null,
-      "accountId": null,
-      "cognitoIdentityId": null,
-      "caller": null,
-      "accessKey": null,
-      "sourceIp": "127.0.0.1",
-      "cognitoAuthenticationType": null,
-      "cognitoAuthenticationProvider": null,
-      "userArn": null,
-      "userAgent": "Custom User Agent String",
-      "user": null
-    },
-    "path": "/prod/path/to/resource",
-    "resourcePath": "/{proxy+}",
-    "httpMethod": "POST",
-    "apiId": "1234567890",
-    "protocol": "HTTP/1.1"
-  }
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "eu-central-1",
+      "eventTime": "2021-02-01T15:47:44.415Z",
+      "eventName": "ObjectCreated:Put", 
+      "userIdentity": {
+        "principalId": "AWS:AIDAZIJQ6NNT3D4YKZXLI"
+      }, 
+      "requestParameters": {
+        "sourceIPAddress": "185.226.112.128"
+      }, 
+      "responseElements": {
+        "x-amz-request-id": "18F8C297E26D4665", 
+        "x-amz-id-2": "Wn0fVP9hKiWtvZuvPrMzho9n6/EruARa5yvcXYwpR1cm9qvtKToNfymT2wS/Z78D3TFEkmeGcuOFaVzE0a4NgeA1A/cGIxPS"
+      }, 
+      "s3": {
+        "s3SchemaVersion": "1.0", 
+        "configurationId": "49bb3841-0828-48c5-b754-a1a09a6ca183", 
+        "bucket": {
+          "name": "thumbnail-1488-228", 
+          "ownerIdentity": {
+            "principalId": "A16BGSD6L838UJ"
+          }, 
+          "arn": "arn:aws:s3:::thumbnail-1488-228"
+        }, 
+        "object": {
+          "key": "hand3.1.png", 
+          "size": 4045425, 
+          "eTag": "5533e8f28b0dd91179be61c1bd81223d", 
+          "sequencer": "00601822A07AA0EB3A"
+        }
+      }
+    }
+  ]
 }
