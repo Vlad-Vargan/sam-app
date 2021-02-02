@@ -1,17 +1,15 @@
 import boto3
 import os
-import sys
 import uuid
 from urllib.parse import unquote_plus
 from PIL import Image
-import PIL.Image
 
 
 s3_client = boto3.client(
                 's3',
-                aws_access_key_id='AKIAZIJQ6NNTVC67DXBA',
-                aws_secret_access_key='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',
-                region_name='eu-central-1'
+                aws_access_key_id=os.environ['access_key_id'],
+                aws_secret_access_key=os.environ['secret_access_key'],
+                region_name=os.environ['region']
 )
 
 def resize_image(image_path, resized_path):
@@ -28,4 +26,4 @@ def lambda_handler(event, context):
         upload_path = '/tmp/resized-{}'.format(tmpkey)
         s3_client.download_file(bucket_name, key, download_path)
         resize_image(download_path, upload_path)
-        s3_client.upload_file(upload_path, bucket_name, key)
+        s3_client.upload_file(upload_path, bucket_name, f'thumbnails/resized-{key}')

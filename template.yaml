@@ -28,6 +28,22 @@ Resources:
           Properties:
             Bucket: !Ref S3Bucket
             Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                - Name: suffix
+                  Value: .pdf
+                - Name: suffix
+                  Value: .jpeg
+                - Name: suffix
+                  Value: .jpg
+                - Name: suffix
+                  Value: .gif
       Runtime: python3.8
       Timeout: 300
       MemorySize: 512
+      Environment:
+        Variables:
+          access_key_id: 
+          secret_access_key: 
+          region: eu-central-1
