@@ -6,15 +6,26 @@ Description: >
   Sample SAM Template for thumbnail-app
 
 Parameters:
-  BucketName:
+  StartBucketName:
     Type: String
-    Default: "thumbnail-1488-228"
+    Description: 'S3 bucket name to retrive initial photo.'
+    Default: "thumbnail-1488"
+
+  EndBucketName:
+    Type: String
+    Description: 'S3 bucket name to save photo thumbnail.'
+    Default: "thumbnail-228"
 
 Resources:
-  S3Bucket:
+  S3StartBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Ref BucketName
+      BucketName: !Ref StartBucketName
+
+  S3EndBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref EndBucketName
 
   ThumbnailFunction:
     Type: AWS::Serverless::Function
@@ -26,24 +37,22 @@ Resources:
         S3Event:
           Type: S3
           Properties:
-            Bucket: !Ref S3Bucket
+            Bucket: !Ref S3StartBucket
             Events: s3:ObjectCreated:*
-            Filter:
-              S3Key:
-                Rules:
-                - Name: suffix
-                  Value: .pdf
-                - Name: suffix
-                  Value: .jpeg
-                - Name: suffix
-                  Value: .jpg
-                - Name: suffix
-                  Value: .gif
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !Sub 'arn:aws:s3:::${StartBucketName}/*'
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: !Sub 'arn:aws:s3:::${EndBucketName}/*'
       Runtime: python3.8
       Timeout: 300
       MemorySize: 512
       Environment:
         Variables:
-          access_key_id: 
-          secret_access_key: 
-          region: eu-central-1
+          EndBucketName: !Ref EndBucketName
