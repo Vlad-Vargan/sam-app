@@ -3,6 +3,7 @@
 import boto3
 import time
 import sys
+import os
 
 # todays\'s epoch
 _tday = time.time()
@@ -11,24 +12,24 @@ duration = 86400*180 # 180 days in epoch seconds
 _expire_limit = tday - duration
 # initialize s3 client
 s3_client = boto3.client('s3')
-my_bucket = "my-s3-bucket" # TODO env baket names
-my_ftp_key = "my-s3-key/"
-_file_size = [] #just to keep track of the total savings in storage size
+my_bucket = os.environ["EndBucketName"]
+_file_size = [] # just to keep track of the total savings in storage size
 
-#Functions
-#works to only get us key/file information
-def get_key_info(bucket="my-s3-bucket", prefix="my-s3-key/"):
 
-    print(f"Getting S3 Key Name, Size and LastModified from the Bucket: {bucket} with Prefix: {prefix}")
+def get_key_info(bucket=my_bucket):
+
+    print("Getting S3 Key Name, Size and LastModified",
+          f"from the Bucket: {bucket} with Prefix: {prefix}")
 
     key_names = []
     file_timestamp = []
     file_size = []
-    kwargs = {"Bucket": bucket, "Prefix": prefix}
+    kwargs = {"Bucket": bucket}
     while True:
         response = s3_client.list_objects_v2(**kwargs)
         for obj in response["Contents"]:
-            # exclude directories/folder from results. Remove this if folders are to be removed too
+            # exclude directories/folder from results.
+            # Remove this if folders are to be removed too
             if "." in obj["Key"]:
                 key_names.append(obj["Key"])
                 file_timestamp.append(obj["LastModified"].timestamp())
@@ -43,7 +44,7 @@ def get_key_info(bucket="my-s3-bucket", prefix="my-s3-key/"):
         "timestamp": file_timestamp,
         "size": file_size
     }
-    print(f'All Keys in {bucket} with {prefix} Prefix found!')
+    print(f'All Keys in {bucket} found!')
 
     return key_info
 
@@ -65,7 +66,7 @@ def delete_s3_file(file_path, bucket=my_bucket):
 # check size deleted
 def _total_size_dltd(size):
     _file_size.append(size)
-    _del_size = round(sum(_file_size)/1.049e+6, 2) #convert from bytes to mebibytes
+    _del_size = round(sum(_file_size)/1.049e+6, 2) # convert from bytes to mebibytes
     return _del_size
 
 

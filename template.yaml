@@ -56,3 +56,33 @@ Resources:
       Environment:
         Variables:
           EndBucketName: !Ref EndBucketName
+
+  CleanerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: chache-cleaner-lambda-function
+      CodeUri: src/fs/cleaner
+      Handler: app.lambda_handler
+      Events:
+        S3Event:
+          CWSchedule:
+            Type: Schedule
+            Properties:
+              Schedule: 'rate(1 minute)'
+              Name: chache cleaner schedule
+              Description: chache cleaner schedule
+              Enabled: True
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:DeleteObject
+              Resource: !Sub 'arn:aws:s3:::${S3StartBucket}/*'
+      Runtime: python3.8
+      Timeout: 300
+      MemorySize: 512
+      Environment:
+        Variables:
+          AppBucketName: !Ref S3StartBucket
