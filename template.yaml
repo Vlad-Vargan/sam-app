@@ -27,48 +27,18 @@ Resources:
     Properties:
       BucketName: !Ref EndBucketName
 
-  ThumbnailFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: thumbnail-lambda-function
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Events:
-        S3Event:
-          Type: S3
-          Properties:
-            Bucket: !Ref S3StartBucket
-            Events: s3:ObjectCreated:*
-      Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - s3:GetObject
-              Resource: !Sub 'arn:aws:s3:::${StartBucketName}/*'
-            - Effect: Allow
-              Action:
-                - s3:PutObject
-              Resource: !Sub 'arn:aws:s3:::${EndBucketName}/*'
-      Runtime: python3.8
-      Timeout: 300
-      MemorySize: 512
-      Environment:
-        Variables:
-          EndBucketName: !Ref EndBucketName
-
   CleanerFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: chache-cleaner-lambda-function
-      CodeUri: src/fs/cleaner
+      CodeUri: cleaner/
       Handler: app.lambda_handler
       Events:
         CWSchedule:
           Type: Schedule
           Properties:
             Schedule: 'rate(1 minute)'
-            Name: chache cleaner schedule
+            Name: chache-cleaner-schedule
             Description: chache cleaner schedule
             Enabled: True
       Policies:
@@ -76,9 +46,11 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
-                - s3:GetObject
+                - s3:ListBucket
                 - s3:DeleteObject
-              Resource: !Sub 'arn:aws:s3:::${S3StartBucket}/*'
+              Resource:
+                - !Sub 'arn:aws:s3:::${S3StartBucket}'
+                - !Sub 'arn:aws:s3:::${S3StartBucket}/*'
       Runtime: python3.8
       Timeout: 300
       MemorySize: 512

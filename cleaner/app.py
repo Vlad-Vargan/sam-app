@@ -2,24 +2,22 @@
 
 import boto3
 import time
-import sys
 import os
 
 # todays\'s epoch
 _tday = time.time()
-duration = 86400*180 # 180 days in epoch seconds
+duration = 86400 * 10 # 10 days in epoch seconds
 # checkpoint for deletion
-_expire_limit = tday - duration
+_expire_limit = _tday - duration
 # initialize s3 client
 s3_client = boto3.client('s3')
-my_bucket = os.environ["EndBucketName"]
+my_bucket = os.environ["AppBucketName"]
 _file_size = [] # just to keep track of the total savings in storage size
 
 
 def get_key_info(bucket=my_bucket):
 
-    print("Getting S3 Key Name, Size and LastModified",
-          f"from the Bucket: {bucket} with Prefix: {prefix}")
+    print(f"Getting S3 Key Name, Size and LastModified from the Bucket: {bucket}")
 
     key_names = []
     file_timestamp = []
@@ -27,13 +25,16 @@ def get_key_info(bucket=my_bucket):
     kwargs = {"Bucket": bucket}
     while True:
         response = s3_client.list_objects_v2(**kwargs)
-        for obj in response["Contents"]:
-            # exclude directories/folder from results.
-            # Remove this if folders are to be removed too
-            if "." in obj["Key"]:
-                key_names.append(obj["Key"])
-                file_timestamp.append(obj["LastModified"].timestamp())
-                file_size.append(obj["Size"])
+        if "Contents" not in response:
+            print(f"No files found in Bucket: {bucket}")
+        else:
+            for obj in response["Contents"]:
+                # exclude directories/folder from results.
+                # Remove this if folders are to be removed too
+                if "." in obj["Key"]:
+                    key_names.append(obj["Key"])
+                    file_timestamp.append(obj["LastModified"].timestamp())
+                    file_size.append(obj["Size"])
         try:
             kwargs["ContinuationToken"] = response["NextContinuationToken"]
         except KeyError:
@@ -70,7 +71,8 @@ def _total_size_dltd(size):
     return _del_size
 
 
-if __name__ == "__main__":
+def lambda_handler(event, context):
+    _del_size = 0 # defualt in case of error
     try:
         s3_file = get_key_info()
         for i, fs in enumerate(s3_file["timestamp"]):
@@ -81,6 +83,6 @@ if __name__ == "__main__":
                     _del_size = _total_size_dltd(s3_file["size"][i])
 
         print(f"Total File(s) Size Deleted: {_del_size} MB")
-    except:
-        print ("failure:", sys.exc_info()[1])
+    except Exception as e:
+        print ("failure:", e)
         print(f"Total File(s) Size Deleted: {_del_size} MB")
